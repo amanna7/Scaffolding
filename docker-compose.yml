@@ -1,0 +1,55 @@
+volumes:
+  scaffolding_data:
+services:
+  db:
+    container_name: db-scaffolding
+    image: postgres
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devPassword
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - scaffolding_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  frontend:
+    container_name: frontend-scaffolding
+    image: frontend-scaffolding
+    build:
+      context: ./frontend
+      target: development
+    volumes:
+      - ./frontend/src:/frontend/src
+      - ./frontend/public:/frontend/public
+    ports:
+      - "5173:5173"
+
+  backend:
+    container_name: backend-scaffolding
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+  
+  backend2:
+    container_name: backend2-scaffolding
+    build:
+      context: ./backend2
+    volumes:
+      - ./backend2:/backend2
+    depends_on:
+      - db
+    ports:
+      - "8001:8001"
+
