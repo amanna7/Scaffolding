@@ -14,3 +14,4 @@ pytest-mock
 authlib
 pydantic-ai
 rich
+pydantic-ai-slim[duckduckgo]
