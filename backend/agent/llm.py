@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from pydantic_ai import Agent
-from agent.ai_model import get_ai_model
+from ai_model import get_ai_model
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from pydantic_ai.usage import UsageLimits
 

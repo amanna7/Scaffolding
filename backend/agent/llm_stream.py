@@ -2,7 +2,7 @@ import asyncio
 from pydantic import BaseModel
 
 from pydantic_ai import Agent
-from agent.ai_model import get_ai_model
+from ai_model import get_ai_model
 from rich.console import Console
 from rich.live import Live
 from pydantic_ai.usage import UsageLimits

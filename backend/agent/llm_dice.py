@@ -1,6 +1,6 @@
 import random
 from pydantic_ai import Agent, RunContext
-from agent.ai_model import get_ai_model
+from ai_model import get_ai_model
 
 ai_model_name = 'claude-3-5-sonnet-latest'
 
