@@ -1,6 +1,5 @@
 import random
 from strands import Agent, tool
-from strands.models.litellm import LiteLLMModel
 from strands.models.anthropic import AnthropicModel
 import os
 from dotenv import load_dotenv
@@ -8,8 +7,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-
+LLM_API_KEY = os.getenv("LLM_API_KEY")
+LLM = "ANTHROPIC"  # or "GEMINI" or "OPENAI"
 # LLM_API_KEY = os.getenv("LLM_API_KEY")
 # if not LLM_API_KEY:
 #     raise ValueError("API key not found. Please set LLM_API_KEY in your .env file.")
@@ -42,6 +41,7 @@ def search_user_location(user: str) -> str:
     random_location = random.choice(locations)
     return f"User current location is {random_location}."
 
+
 model = AnthropicModel(
     client_args={
         "api_key": ANTHROPIC_API_KEY,
@@ -67,6 +67,7 @@ model = AnthropicModel(
 agent = Agent(
     model=model,
     tools=[get_weather],
+    
     system_prompt="""You are a helpful assistant that can autonomously use tools to answer questions.
     
     When given a question:
@@ -78,16 +79,15 @@ agent = Agent(
     Always explain your reasoning process."""
 )
 
+
+
 def test_autonomous_behavior():
-    
     print(agent.tool_names)
-    
     test_questions = [
         # Simple tool usage
         "What's the weather in Tokyo?",
         # Multi-step reasoning
-       "What's the weather in the location of user UserABC?",
-
+        "What's the weather in the location of user UserABC?",
     ]
     
     for i, question in enumerate(test_questions, 1):
