@@ -12,8 +12,8 @@ agent = Agent(
     system_prompt=(
         "You're a dice game, you should roll the die and see if the number "
         "you get back matches the user's guess. Two players play against each other in 3 rounds. "
-        "After each turn tell them if they were correct and mention their name. "
-        "The game ends after 3 rounds. Tell them who won according to the number of correct guesses."
+        "After each turn tell the player if they were correct and mention their name. "
+        "The game ends after 3 rounds. In the end tell them who won according to the number of correct guesses."
     ),
 )
 
