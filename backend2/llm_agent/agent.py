@@ -1,6 +1,7 @@
 import random
 from strands import Agent, tool
 from strands.models.anthropic import AnthropicModel
+from strands.models.litellm import LiteLLMModel
 import os
 from dotenv import load_dotenv
 
@@ -42,27 +43,41 @@ def search_user_location(user: str) -> str:
     return f"User current location is {random_location}."
 
 
-model = AnthropicModel(
-    client_args={
-        "api_key": ANTHROPIC_API_KEY,
-    },
-    max_tokens=1028,
-    model_id="claude-3-haiku-20240307",
-    params={
-        "temperature": 0.7,
-    }
-)
 
-# model = LiteLLMModel(
-#     client_args={
-#         "api_key": LLM_API_KEY,
-#     },
-#     model_id="gemini/gemini-1.5-flash",
-#     params={
-#         "max_tokens": 1000,
-#         "temperature": 0.7,
-#     }
-# )
+match LLM:
+    case "ANTHROPIC":
+        model = AnthropicModel(
+            client_args={
+                "api_key": LLM_API_KEY,
+            },
+            max_tokens=1028,
+            model_id="claude-3-haiku-20240307",
+            params={
+                "temperature": 0.7,
+            }
+        )   
+    case "GEMINI":
+        model = LiteLLMModel(
+            client_args={
+                "api_key": LLM_API_KEY,
+            },
+            model_id="gemini/gemini-1.5-flash",
+            params={
+                "max_tokens": 1000,
+                "temperature": 0.7,
+            }
+        )
+    case "OPENAI":
+        model = LiteLLMModel(
+            client_args={
+                "api_key": LLM_API_KEY,
+            },
+            model_id="openai/gpt-3.5-turbo",
+            params={
+                "max_tokens": 1000,
+                "temperature": 0.7,
+            }
+        )
 
 agent = Agent(
     model=model,
@@ -78,24 +93,3 @@ agent = Agent(
     
     Always explain your reasoning process."""
 )
-
-
-
-def test_autonomous_behavior():
-    print(agent.tool_names)
-    test_questions = [
-        # Simple tool usage
-        "What's the weather in Tokyo?",
-        # Multi-step reasoning
-        "What's the weather in the location of user UserABC?",
-    ]
-    
-    for i, question in enumerate(test_questions, 1):
-        print(f"\n{'='*60}")
-        print(f"TEST {i}: {question}")
-        print('='*60)
-        response = agent(question)
-        print(f"AGENT RESPONSE:\n{response}")
-
-if __name__ == "__main__":
-    test_autonomous_behavior()
