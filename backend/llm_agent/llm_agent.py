@@ -5,6 +5,11 @@ from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.models.anthropic import AnthropicModel
 from pydantic_ai.providers.anthropic import AnthropicProvider
 from pydantic_ai.usage import UsageLimits
+from pydantic_ai.messages import ModelMessage
+from pydantic_core import to_jsonable_python
+from utils.logger import logger
+
+from .schemas import ChatResponse
 
 ai_model_name = 'claude-3-5-sonnet-latest'
 
@@ -25,7 +30,10 @@ ai_model = get_ai_model(ai_model_name)
 agent = Agent(ai_model)
 
 
-async def stream_response(request: str) -> AsyncGenerator[str, None]:
-    async with agent.run_stream(request, usage_limits=UsageLimits(response_tokens_limit=1010)) as response:
+async def stream_response(request: str, chat_history: list[ModelMessage] | None) -> AsyncGenerator[str, None]:
+    async with agent.run_stream(request, usage_limits=UsageLimits(response_tokens_limit=1010), message_history=chat_history) as response:
         async for message in response.stream_text(delta=True):
-            yield message
+            yield ChatResponse(response=message).model_dump_json()
+        new_message_history = to_jsonable_python(response.all_messages())
+        logger.info(ChatResponse(response="Message history", message_history=new_message_history).model_dump_json())
+        yield ChatResponse(response="Message history", message_history=new_message_history).model_dump_json()
