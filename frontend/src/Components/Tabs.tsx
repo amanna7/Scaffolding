@@ -1,9 +1,6 @@
 import { FC, useState } from 'react'
-import UserTable from './UserTable'
 import { TabContext } from '@mui/lab'
 import { Box, Tab, Tabs, TabsOwnProps } from '@mui/material'
-import OrganizationTable from './OrganizationTable'
-import EmployeeTable from './EmployeeTable'
 import logo from '../assets/react.svg'
 
 interface RenderTabsProps {
@@ -40,17 +37,6 @@ const RenderTabHeaders: FC<RenderTabHeadersProps> = ({ value, onChange, permissi
   tabs.push(
     <Tab label="Home" value="home" {...ariaProps} key="home" />
   )
-  if (permission === 'admin' || permission === 'designer') {
-    tabs.push(
-      <Tab label="Users" value="users" {...ariaProps} key="user" />
-    )
-  }
-  tabs.push(
-    <Tab label="Organizations" value="organizations" {...ariaProps} key="organization" />
-  )
-  tabs.push(
-    <Tab label="Employees" value="employees" {...ariaProps} key="employee" />
-  )
   return (
     <Tabs value={value} onChange={onChange} aria-label="Table Tabs">
       {tabs}
@@ -85,23 +71,6 @@ const RenderTabPanels: FC<RenderTabPanelsProps> = ({ value, permission }) => {
         }} />
       </div>
     </TabPanel >
-  )
-  if (permission === 'admin' || permission === 'designer') {
-    tabPanels.push(
-      <TabPanel value={value} index="users" key="user" >
-        <UserTable />
-      </TabPanel>
-    )
-  }
-  tabPanels.push(
-    <TabPanel value={value} index="organizations" key="organization">
-      <OrganizationTable />
-    </TabPanel>
-  )
-  tabPanels.push(
-    <TabPanel value={value} index="employees" key="employee">
-      <EmployeeTable actions={permission == 'admin'} />
-    </TabPanel>
   )
   return <>{tabPanels}</>
 }
