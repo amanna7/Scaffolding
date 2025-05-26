@@ -41,15 +41,4 @@ services:
       - db
     ports:
       - "8000:8000"
-  
-  backend2:
-    container_name: backend2-scaffolding
-    build:
-      context: ./backend2
-    volumes:
-      - ./backend2:/backend2
-    depends_on:
-      - db
-    ports:
-      - "8001:8001"
 
