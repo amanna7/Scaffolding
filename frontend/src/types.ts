@@ -80,3 +80,14 @@ type employeeColumns = {
 export type tableColumns = userColumns | companyColumns | employeeColumns
 
 export type PermissionType = 'admin' | 'designer' | 'user'
+
+export type Message = {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface LLMRequest {
+  token: string
+  message: string
+  message_history: Message[]
+}

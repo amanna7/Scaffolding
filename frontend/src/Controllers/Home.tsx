@@ -14,13 +14,13 @@ const Home: FC = () => {
   const [permission, setPermission] = useState<PermissionType>('user')
 
   useEffect(() => {
-    console.log('Checking permissions')
+    // console.log('Checking permissions')
     if (getPermissions != undefined) {
       const permissions = getPermissions()
-      console.log('Permissions', permissions)
+      // console.log('Permissions', permissions)
       if (permissions != undefined) {
         const permission_list = permissions['permissions']
-        console.log('Permission list ', permission_list)
+        // console.log('Permission list ', permission_list)
         if (permission_list.includes('admin')) {
           setPermission('admin')
         } else if (permission_list.includes('designer')) {

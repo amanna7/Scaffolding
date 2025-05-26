@@ -12,7 +12,7 @@ export function useToken(): string | undefined {
       }
     },
   })
-  console.log('Token:', data)
+  // console.log('Token:', data)
 
   return data
 }

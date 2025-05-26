@@ -2,6 +2,10 @@ import { FC, useState } from 'react'
 import { TabContext } from '@mui/lab'
 import { Box, Tab, Tabs, TabsOwnProps } from '@mui/material'
 import logo from '../assets/react.svg'
+import { useToken } from '../Hooks/Token'
+import { LLMRequest, Message } from '../types'
+import { askLLM } from '../Api/llm_agent'
+import { AxiosResponse } from 'axios'
 
 interface RenderTabsProps {
   permission: 'admin' | 'designer' | 'user'
@@ -13,7 +17,7 @@ const RenderTabs: FC<RenderTabsProps> = ({ permission }) => {
     setValue(newValue)
   }
 
-  console.log('Current tab value:', value)
+  // console.log('Current tab value:', value)
 
   return (
     <TabContext value={value}>
@@ -107,23 +111,23 @@ function ariaProps(index: number) {
 
 export default RenderTabs
 
-type Message = {
-  role: 'user' | 'assistant';
-  content: string;
-}
-
 const LLMChatInterface: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
+  const token = useToken()
 
   const handleSend = async () => {
     if (!input.trim()) return
+    if (!token) return
     const userMessage: Message = { role: 'user', content: input }
     setMessages(previous => [...previous, userMessage])
     setInput('')
 
     // Simulate LLM response (replace with real API call)
-    const assistantMessage: Message = { role: 'assistant', content: `Echo: ${input}` }
+    const assistantMessage: Message = await askLLM(
+      token, input, messages
+    )
+    console.log('Assistant message:', assistantMessage)
     setTimeout(() => {
       setMessages(previous => [...previous, assistantMessage])
     }, 500)
