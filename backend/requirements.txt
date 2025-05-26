@@ -13,4 +13,3 @@ pytest-cov
 pytest-mock
 authlib
 pydantic_ai
-rich
