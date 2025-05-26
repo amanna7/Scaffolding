@@ -26,7 +26,7 @@ services:
       context: ./frontend
       target: development
     volumes:
-      - ./frontend/app:/frontend/app
+      - ./frontend/src:/frontend/src
       - ./frontend/public:/frontend/public
     ports:
       - "5173:5173"

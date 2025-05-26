@@ -1,87 +1,74 @@
-# Welcome to React Router!
+# Frontend
+Frontend will run (by default) on 5173 port.
 
-A modern, production-ready template for building full-stack React applications using React Router.
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
-
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
-
-## Getting Started
-
-### Installation
-
-Install the dependencies:
-
-```bash
-yarn
+```sh
+PORT= #default is 5173
+VITE_APP_AUTHORIZATION= #the header on which you'll send the token, default is authorization
+VITE_APP_SECRET_KEY= #a secret key to hash the redux store, (ex. unaChiaveSegreta)
+VITE_APP_BASE_URL= #your FE hosted url ex. http://localhost:5173
+VITE_APP_BE_URL= #your BE hosted url ex. http://localhost:3001
 ```
 
-### Development
+## Kinde
+We implemented Login with kinde, to change kinde auth set your configuration of these env vars
 
-Start the development server with HMR:
-
-```bash
-yarn run dev
+```sh
+VITE_APP_KINDE_CLIENT_ID= #set your kinde clint id
+VITE_APP_KINDE_DOMAIN= #set your kinde domain
+VITE_APP_KINDE_REDIRECT_URL= #set desired redirect url
 ```
 
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-yarn run build
+## Stripe
+We Implemented Stripe as payment service, You need to configure your stripe to have two products to sell, then you need to set these env vars:
+```sh
+VITE_STRIPE_PUBLIC_KEY= #the public key you find on stripe dashboard
 ```
 
-## Deployment
+## Dev settings
+We use React + TypeScript + Vite. This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-### Docker Deployment
+Currently, two official plugins are available:
 
-To build and run using Docker:
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-```bash
-docker build -t my-app .
+### Expanding the ESLint configuration
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-# Run the container
-docker run -p 3000:3000 my-app
+- Configure the top-level `parserOptions` property like this:
+
+```js
+export default tseslint.config({
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
+- Optionally add `...tseslint.configs.stylisticTypeChecked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
+```js
+// eslint.config.js
+import react from 'eslint-plugin-react'
 
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `yarn run build`
-
+export default tseslint.config({
+  // Set the react version
+  settings: { react: { version: '19.0' } },
+  plugins: {
+    // Add the react plugin
+    react
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended rules
+    ...react.configs.recommended.rules,
+    ...react.configs['jsx-runtime'].rules
+  }
+})
 ```
-├── package.json
-├── yarn.lock
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
