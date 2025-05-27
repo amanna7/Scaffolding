@@ -20,14 +20,17 @@ router = APIRouter()
 async def get_all_users(request: schemas.ChatRequest, db: Session = Depends(get_db), token: HTTPAuthorizationCredentials = Depends(security)):
     await validate_token(token)  # Qui possiamo verificare eventualmente i permessi su token_user_id per maggiore granularità
     try:
-        response = stream_response(request.message, request.message_history)
+        # TODO: read message history from memory or database
+        response = stream_response(request.message, None)
 
         async def sse_generator(response) -> AsyncGenerator[str, None]:
             async for item in response:
-                logger.debug(f'Received response chunk: {response}')
+                logger.debug(f'Received response chunk: {item.model_dump_json()}')
+                if isinstance(item, schemas.MessageHistory):
+                    # TODO: save message history in memory
+                    continue
                 await asyncio.sleep(0)
-                yield item
-
+                yield item.model_dump_json()
 
         return StreamingResponse(content=sse_generator(response), media_type="text/event-stream")
     except Exception as e:
