@@ -30,8 +30,8 @@ ai_model = get_ai_model(ai_model_name)
 agent = Agent(ai_model)
 
 
-async def stream_response(request: str, chat_history: list[ModelMessage] | None) -> AsyncGenerator[ChatResponse | MessageHistory, None]:
-    async with agent.run_stream(request, usage_limits=UsageLimits(response_tokens_limit=1010), message_history=chat_history) as response:
+async def stream_response(chat_request: str, chat_history: list[ModelMessage] | None) -> AsyncGenerator[ChatResponse | MessageHistory, None]:
+    async with agent.run_stream(chat_request, usage_limits=UsageLimits(response_tokens_limit=1010), message_history=chat_history) as response:
         async for message in response.stream_text(delta=True):
             yield ChatResponse(response=message)
         new_message_history = to_jsonable_python(response.new_messages())

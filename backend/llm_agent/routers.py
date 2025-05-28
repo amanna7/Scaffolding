@@ -17,11 +17,11 @@ router = APIRouter()
 
 @router.post("", response_model=schemas.ChatResponse,include_in_schema=False)
 @router.post("/", response_model=schemas.ChatResponse)
-async def get_all_users(request: schemas.ChatRequest, db: Session = Depends(get_db), token: HTTPAuthorizationCredentials = Depends(security)):
+async def get_all_users(chat_request: schemas.ChatRequest, db: Session = Depends(get_db), token: HTTPAuthorizationCredentials = Depends(security)):
     await validate_token(token)  # Qui possiamo verificare eventualmente i permessi su token_user_id per maggiore granularità
     try:
         # TODO: read message history from memory or database
-        response = stream_response(request.message, None)
+        response = stream_response(chat_request.message, None)
 
         async def sse_generator(response) -> AsyncGenerator[str, None]:
             async for item in response:
