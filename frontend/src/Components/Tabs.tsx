@@ -3,9 +3,8 @@ import { TabContext } from '@mui/lab'
 import { Box, Tab, Tabs, TabsOwnProps } from '@mui/material'
 import logo from '../assets/react.svg'
 import { useToken } from '../Hooks/Token'
-import { LLMRequest, Message } from '../types'
+import { Message } from '../types'
 import { askLLM } from '../Api/llm_agent'
-import { AxiosResponse } from 'axios'
 
 interface RenderTabsProps {
   permission: 'admin' | 'designer' | 'user'
@@ -125,7 +124,7 @@ const LLMChatInterface: React.FC = () => {
 
     // Simulate LLM response (replace with real API call)
     const assistantMessage: Message = await askLLM(
-      token, input, messages
+      token, input
     )
     console.log('Assistant message:', assistantMessage)
     setTimeout(() => {
