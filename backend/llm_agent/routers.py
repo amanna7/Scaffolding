@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime, timezone
 import logging
 from typing import Any, AsyncGenerator
 from fastapi import APIRouter, Depends, HTTPException
@@ -6,6 +7,8 @@ from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic_core import to_jsonable_python
 from sqlalchemy.orm import Session
+
+from .chat_memory import chat_memory
 
 from .llm_agent import stream_response
 from . import schemas
@@ -20,14 +23,15 @@ router = APIRouter()
 async def get_all_users(chat_request: schemas.ChatRequest, db: Session = Depends(get_db), token: HTTPAuthorizationCredentials = Depends(security)):
     await validate_token(token)  # Qui possiamo verificare eventualmente i permessi su token_user_id per maggiore granularità
     try:
-        # TODO: read message history from memory or database
-        response = stream_response(chat_request.message, None)
+        chat_id = 1
+        response = stream_response(chat_request.message, chat_memory.get(chat_id))
 
         async def sse_generator(response) -> AsyncGenerator[str, None]:
             async for item in response:
                 logger.debug(f'Received response chunk: {item.model_dump_json()}')
                 if isinstance(item, schemas.MessageHistory):
-                    # TODO: save message history in memory
+                    [chat_memory.append(chat_id, part) for part in item.messages]
+                    logger.info(f"chat memory: {chat_memory.get(chat_id)}")
                     continue
                 await asyncio.sleep(0)
                 yield item.model_dump_json()
